@@ -56,6 +56,16 @@ namespace lightningcreations::lcupm{
 	namespace torrent{
 		class MagnetLinkResolver;
 	}
+
+	namespace exception{
+		class LCUPMException;
+		class DownloadException;
+		class CorruptCacheException;
+		class UnfollowableReferenceException;
+		class IncompatiblePackageException;
+		class BadReferenceException;
+		class BadPackageException;
+	}
 }
 
 
