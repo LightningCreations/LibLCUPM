@@ -5,9 +5,9 @@ C_DIALECT = c11
 
 INCLUDES = -I./include
 
-LIBRARIES = -lcurl -lssl -ldl
+LIBRARIES = -lcurl -lssl -ldl -ltorrent
 
-CXX_FLAGS += -std=$(CXX_DIALECT) $(INCLUDES) -pthread -Werror=all -pedantic-error -fPIC -flto
+CXX_FLAGS += -std=$(CXX_DIALECT) $(INCLUDES) -pthread -Werror=all -pedantic-errors -fPIC -flto
 
 C_FLAGS += -std=$(C_DIALECT) $(INCLUDES) -pthread -Werror=all -fPIC
 
@@ -17,7 +17,7 @@ OUTPUT := liblcupm.so
 
 ARCHIVE_OUTPUT := liblcupm.a
 
-OBJECTS := out/PlatformInfo.o
+OBJECTS := out/PlatformInfo.o out/Provider.o
 
 all: dynamic
 

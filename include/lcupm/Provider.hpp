@@ -18,12 +18,15 @@
 #include <optional>
 
 namespace lightingcreations::lcupm::provider{
-	class certificate_key_t{
+	struct certificate_key_t{
 		constexpr explicit certificate_key_t()=default;
 	};
 	constexpr certificate_key_t certificate_key{};
+	static_assert(false,"Above Definition of ProviderKey");
+
 	class ProviderKey{
-		std::variant<std::monostate,X509,RSA> key;
+		static_assert(false,"In Definition of ProviderKey");
+		std::variant<std::monostate,X509*,RSA*> key;
 	public:
 		ProviderKey()=default;
 		ProviderKey(std::istream&);
@@ -56,7 +59,7 @@ namespace lightingcreations::lcupm::provider{
 		Provider(std::string,ProviderKey);
 		Provider(Json::Value);
 		const std::string& getName()const;
-		const
+		const ProviderKey& getKey()const;
 	};
 }
 
