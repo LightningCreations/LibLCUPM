@@ -59,8 +59,8 @@ namespace lightingcreations::lcupm::provider{
 		const std::string& getName()const;
 		const ProviderKey& getKey()const;
 	};
+
+	static_assert(std::is_same<ProviderKey,lightningcreations::lcupm::provider::ProviderKey>::value, "There's your problem.");
 }
-
-
 
 #endif /* INCLUDE_LCUPM_PROVIDER_HPP_ */
