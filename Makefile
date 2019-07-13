@@ -21,7 +21,10 @@ OBJECTS := out/PlatformInfo.o out/Provider.o
 
 all: dynamic
 
-out/%.o: src/%.cpp
+out:
+	mkdir out
+
+out/%.o: src/%.cpp | out
 	$(CXX) $(CXX_FLAGS) -c $^ -o $@
 	
 $(OUTPUT): $(OBJECTS)
