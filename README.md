@@ -1,4 +1,23 @@
 # LibLCUPM
+
+## Build Dependencies
+
+### Programs
+GCC: >=6.1
+
+### Libraries
+libcurl4-dev: >=7.58.0-2 (tested with libcurl4-openssl-dev and libcurl4-gnutls-dev)
+libjsoncpp-dev: >=1.7.4-3
+libssl-dev: >=1.1.1-1
+libtorrent-dev: >=0.13.6-2
+
+## Runtime Dependencies (shared linkage)
+// Unknkown currently
+
+## Runtime Dependencies (static linkage)
+None; dependencies are linked in.
+
+## License
 Library for the Lightning Creations Universal Package Manager
 
 Copyright (c) 2019 Connor Horman and Lightning Creations
