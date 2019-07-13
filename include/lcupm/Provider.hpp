@@ -17,7 +17,7 @@
 #include <jsoncpp/json/json.h>
 #include <optional>
 
-namespace lightingcreations::lcupm::provider{
+namespace lightningcreations::lcupm::provider{
 	struct certificate_key_t{
 		constexpr explicit certificate_key_t()=default;
 	};
