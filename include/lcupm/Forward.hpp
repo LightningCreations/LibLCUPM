@@ -16,9 +16,6 @@ namespace lightningcreations::lcupm{
 
 	class PlatformInfo;
 
-	const PlatformInfo& getCurrentPlatform();
-	std::vector<std::reference_wrapper<const PlatformInfo>> getAvailablePlatforms();
-
 	namespace provider{
 		class Provider;
 		class ProviderKey;

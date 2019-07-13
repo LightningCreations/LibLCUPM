@@ -14,16 +14,16 @@ namespace lightningcreations::lcupm{
 	class PlatformInfo final{
 	private:
 		friend const PlatformInfo& getCurrentPlatform();
-		friend std::vector<std::reference_wrapper<const PlatformInfo>> getAvailablePlatforms();
+		friend const std::vector<PlatformInfo>& getAvailablePlatforms();
 		const char* os;
 		const char* toolkit;
 		const char* arch;
-		PlatformInfo(const char* os,const char* toolkit,const char* toolkit,const char* distName);
+		PlatformInfo(const char* os,const char* toolkit,const char* arch);
 		PlatformInfo(const PlatformInfo&)=delete;
 		PlatformInfo& operator=(const PlatformInfo&)=delete;
-		PlatformInfo(PlatformInfo&&)=delete;
-		PlatformInfo& operator=(PlatformInfo&&)=delete;
 	public:
+		PlatformInfo(PlatformInfo&&)=default;
+		PlatformInfo& operator=(PlatformInfo&&)=default;
 		const char* getOSName()const;
 		const char* getToolkitName()const;
 		const char* getArchName()const;

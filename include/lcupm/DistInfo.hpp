@@ -40,6 +40,20 @@
 #ifdef __arm__
 #define LCUPM_ARCH_arm 0
 #endif
+#elif define(__CYGWIN__)
+#define LCUPM_DIST_OS_CYGWIN 1
+#define LCUPM_DIST_OS_WINDOWS 0
+#define LCUPM_DIST_TK_X11 0
+#define LCUPM_DIST_TK_DX 3
+#define LCUPM_DIST_TK_SFML 2
+#define LCUPM_DIST_TK_WIN32 1
+#ifdef __i386__
+#define LCUPM_ARCH_x86 0
+#endif
+#ifdef __amd64__
+#define LCUPM_ARCH_x64 1
+#define LCUPM_ARCH_x86 0
+#endif
 #elif defined(__WIN32)
 #define LCUPM_DIST_OS_WINDOWS 1
 #define LCUPM_DIST_OS_CYGWIN 0
