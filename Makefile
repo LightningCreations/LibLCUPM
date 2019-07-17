@@ -9,11 +9,11 @@ LIBRARIES = -lcurl -lssl -ldl -ltorrent
 
 DEFINES := -DLCUPM_BUILD
 
-CXX_FLAGS += -std=$(CXX_DIALECT) $(INCLUDES) $(DEFINES) -pthread -pedantic-errors -fPIC -flto
+CXX_FLAGS += -std=$(CXX_DIALECT) $(INCLUDES) $(DEFINES) -fvisibility=hidden -fvisibility-inlines-hidden -pthread -pedantic-errors -fPIC -flto
 
-C_FLAGS += -std=$(C_DIALECT) $(INCLUDES) $(DEFINES) -pthread -fPIC
+C_FLAGS += -std=$(C_DIALECT) $(INCLUDES) $(DEFINES) -fvisibility=hidden -fvisibility-inlines-hidden -pthread -fPIC
 
-LINKER_FLAGS += $(LIBRARIES) -shared -pthread -fPIC
+LINKER_FLAGS += $(LIBRARIES) -fvisibility=hidden -fvisibility-inlines-hidden -shared -pthread -fPIC
 
 OUTPUT := liblcupm.so
 
@@ -26,9 +26,12 @@ all: dynamic static
 out:
 	mkdir out
 
+test:
+	mkdir test
+
 out/%.o: src/%.cpp | out
 	$(CXX) $(CXX_FLAGS) -c $^ -o $@
-	
+
 $(OUTPUT): $(OBJECTS)
 	$(CXX) $(LINKER_FLAGS) $^ -o $@
 	
@@ -45,3 +48,5 @@ dynamic: $(OUTPUT)
 
 static: $(ARCHIVE_OUTPUT)
 
+rebuild: clean all
+	
