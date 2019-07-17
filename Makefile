@@ -7,9 +7,11 @@ INCLUDES = -I./include
 
 LIBRARIES = -lcurl -lssl -ldl -ltorrent
 
-CXX_FLAGS += -std=$(CXX_DIALECT) $(INCLUDES) -pthread -pedantic-errors -fPIC -flto
+DEFINES := -DLCUPM_BUILD
 
-C_FLAGS += -std=$(C_DIALECT) $(INCLUDES) -pthread -fPIC
+CXX_FLAGS += -std=$(CXX_DIALECT) $(INCLUDES) $(DEFINES) -pthread -pedantic-errors -fPIC -flto
+
+C_FLAGS += -std=$(C_DIALECT) $(INCLUDES) $(DEFINES) -pthread -fPIC
 
 LINKER_FLAGS += $(LIBRARIES) -shared -pthread -fPIC
 
@@ -17,9 +19,9 @@ OUTPUT := liblcupm.so
 
 ARCHIVE_OUTPUT := liblcupm.a
 
-OBJECTS := out/PlatformInfo.o out/Provider.o
+OBJECTS := out/PlatformInfo.o out/Provider.o out/Downloader.o
 
-all: dynamic
+all: dynamic static
 
 out:
 	mkdir out
@@ -42,4 +44,4 @@ clean:
 dynamic: $(OUTPUT)
 
 static: $(ARCHIVE_OUTPUT)
-	
+

@@ -68,7 +68,7 @@ namespace lightningcreations::lcupm::downloader{
 			return curl.doDownload(uri.getURI());
 		}
 	};
-	static std::shared_ptr<HTTPDownloader> HTTPDownloader::http{new HTTPDownloader("http")};
+	std::shared_ptr<HTTPDownloader> HTTPDownloader::http{new HTTPDownloader("http")};
 
 
 	class FTPDownloader final:public DownloaderImpl<FTPDownloader>{
@@ -95,7 +95,65 @@ namespace lightningcreations::lcupm::downloader{
 
 	template<typename target> std::shared_ptr<target> DownloaderImpl<target>::impl{new target{}};
 
+	class LocalCacheDownloader final:public DownloaderImpl<LocalCacheDownloader>{
+	private:
+		friend class DownloaderImpl<LocalCacheDownloader>;
+		LocalCacheDownloader():DownloaderImpl("localcache"){}
+	protected:
+		bool do_downloadTo(FILE* target,const URI& uri){
+			auto cacheFile{"./.localcache"+uri.getRemaining()};
+			return std::freopen(cacheFile.c_str(),"rb",target);
+		}
+	};
 
+	static std::map<std::string,std::shared_ptr<Downloader>>& getSchemeMap(){
+		static std::map<std::string,std::shared_ptr<Downloader>> schemeMap{};
+		return schemeMap;
+	}
 
+	void Downloader::downloadTo(FILE* target,const URI& uri){
+		(getSchemeMap()[uri.getScheme()])->do_downloadTo(target,uri);
+	}
+
+	void Downloader::registerDownloader(const char* scheme,std::shared_ptr<Downloader> ptr){
+		getSchemeMap()[scheme] = ptr;
+	}
+
+	Downloader::Downloader(const char* scheme):scheme{scheme}{}
+
+	const char* Downloader::getScheme()const{
+		return this->scheme;
+	}
+
+}
+
+namespace lightningcreations::lcupm{
+	URI::URI(std::string scheme,std::string domain,std::string path,std::string query,std::string schemeSpecificPart,unsigned short port):scheme(std::move(scheme))
+		{
+			if(!schemeSpecificPart.empty())
+				this->rest = schemeSpecificPart+"@";
+			this->rest += domain;
+			if(port!=0)
+				(this->rest += ":"),(this->rest += port);
+			this->rest += "/";
+			this->rest += path;
+			if(!query.empty())
+				this->rest += "?"+query;
+		}
+	URI::URI(std::string uri){
+		std::string::size_type pos = uri.find("://");
+		this->scheme = uri.substr(0, pos);
+		this->rest = uri.substr(pos+3);
+	}
+
+	const std::string& URI::getScheme()const{
+		return scheme;
+	}
+	const std::string& URI::getRemaining()const{
+		return rest;
+	}
+	std::string URI::getURI()const{
+		return scheme+"://"+rest;
+	}
 }
 

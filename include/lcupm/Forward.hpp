@@ -8,6 +8,8 @@
 #ifndef INCLUDE_FORWARD_HPP_
 #define INCLUDE_FORWARD_HPP_
 
+#include "Exports.hpp"
+
 #include <vector>
 #include <functional>
 

@@ -12,36 +12,31 @@
 #include <memory>
 
 namespace lightningcreations::lcupm{
-	class URI{
+	class LCUPM_API URI{
 	private:
 		std::string scheme;
-		std::string domain;
-		std::string path;
-		std::string query;
+		std::string rest;
 	public:
 		URI(std::string uri);
-		URI(std::string scheme,std::string domain,std::string path, std::string query);
+		URI(std::string scheme,std::string domain,std::string path, std::string query="",std::string schemeSpecificPart="",unsigned short port=0);
 		const std::string& getScheme()const;
-		const std::string& getDomain()const;
-		const std::string& getPath()const;
-		const std::string& getQuery()const;
+		const std::string& getRemaining()const;
 		std::string getURI()const;
 	};
 }
 
 namespace lightningcreations::lcupm::downloader{
-	class Downloader{
+	class LCUPM_API Downloader{
 	private:
 		const char* scheme;
 	protected:
 		Downloader(const char* scheme);
-		~Downloader();
+		~Downloader()=default;
 		static void registerDownloader(const char* scheme,std::shared_ptr<Downloader> src);
 		virtual bool do_downloadTo(FILE*,const URI&)const=0;
-	public:
-		static std::shared_ptr<Downloader> getDownloaderFor(const URI&);
-		void downloadTo(FILE*,const URI&)const;
 		const char* getScheme()const;
+	public:
+		static void downloadTo(FILE*,const URI&);
 	};
 
 }

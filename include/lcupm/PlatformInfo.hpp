@@ -11,7 +11,7 @@
 #include <lcupm/Forward.hpp>
 
 namespace lightningcreations::lcupm{
-	class PlatformInfo final{
+	class LCUPM_API PlatformInfo final{
 	private:
 		friend const PlatformInfo& getCurrentPlatform();
 		friend const std::vector<PlatformInfo>& getAvailablePlatforms();

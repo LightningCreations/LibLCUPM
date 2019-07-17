@@ -23,7 +23,7 @@ namespace lightningcreations::lcupm::provider{
 	};
 	constexpr certificate_key_t certificate_key{};
 
-	class ProviderKey{
+	class LCUPM_API ProviderKey{
 		std::variant<std::monostate,X509*,RSA*> key;
 	public:
 		ProviderKey()=default;
@@ -33,7 +33,7 @@ namespace lightningcreations::lcupm::provider{
 		bool verify(std::string signature,const unsigned char* data,std::size_t dlen);
 	};
 
-	class KeyRef{
+	class LCUPM_API KeyRef{
 		std::string keyUri;
 		std::string keyFingerprint;
 		mutable std::optional<ProviderKey> resolved;
@@ -44,7 +44,7 @@ namespace lightningcreations::lcupm::provider{
 		const ProviderKey* operator->()const;
 	};
 
-	class Provider{
+	class LCUPM_API Provider{
 	private:
 		std::optional<ProviderKey> key;
 		KeyRef ref;

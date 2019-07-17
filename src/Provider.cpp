@@ -6,6 +6,7 @@
  */
 
 #include <lcupm/Provider.hpp>
+#include <lcupm/Downloader.hpp>
 #include <openssl/pem.h>
 
 #include <functional>
@@ -194,8 +195,9 @@ namespace lightningcreations::lcupm::provider{
 
 	static ProviderKey downloadKey(const std::string& uri){
 		FILE* f = std::tmpfile();
-
+		lcupm::downloader::Downloader::downloadTo(f,URI{uri});
 		ProviderKey k{f};
+		std::fclose(f);
 		return std::move(k);
 	}
 
