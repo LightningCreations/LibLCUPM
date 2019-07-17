@@ -13,7 +13,7 @@
 #include <openssl/rsa.h>
 #include <openssl/x509v3.h>
 #include <variant>
-#include <istream>
+#include <cstdio>
 #include <jsoncpp/json/json.h>
 #include <optional>
 
@@ -27,8 +27,9 @@ namespace lightningcreations::lcupm::provider{
 		std::variant<std::monostate,X509*,RSA*> key;
 	public:
 		ProviderKey()=default;
-		ProviderKey(std::istream&);
-		ProviderKey(std::istream&,certificate_key_t);
+		ProviderKey(FILE*);
+		ProviderKey(FILE*,certificate_key_t);
+		~ProviderKey();
 		bool verify(std::string signature,const unsigned char* data,std::size_t dlen);
 	};
 
@@ -38,12 +39,8 @@ namespace lightningcreations::lcupm::provider{
 		mutable std::optional<ProviderKey> resolved;
 		//Mutable b/c the const versions may need to follow the keyref
 	public:
-		KeyRef(std::nullptr_t=nullptr);
 		KeyRef(std::string keyUri,std::string fingerprint);
-		KeyRef& operator=(std::nullptr_t);
-		ProviderKey& operator*();
 		const ProviderKey& operator*()const;
-		ProviderKey* operator->();
 		const ProviderKey* operator->()const;
 	};
 
@@ -59,8 +56,6 @@ namespace lightningcreations::lcupm::provider{
 		const std::string& getName()const;
 		const ProviderKey& getKey()const;
 	};
-
-	static_assert(std::is_same<ProviderKey,lightningcreations::lcupm::provider::ProviderKey>::value, "There's your problem.");
 }
 
 #endif /* INCLUDE_LCUPM_PROVIDER_HPP_ */

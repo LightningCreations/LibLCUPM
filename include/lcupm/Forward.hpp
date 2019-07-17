@@ -44,10 +44,6 @@ namespace lightningcreations::lcupm{
 
 	namespace downloaders{
 		class Downloader;
-		class HTTPDownloader;
-		class TorrentDownloader;
-		class FTPDownloader;
-		class SMBDownloader;
 	}
 
 	namespace torrent{

@@ -7,9 +7,9 @@ INCLUDES = -I./include
 
 LIBRARIES = -lcurl -lssl -ldl -ltorrent
 
-CXX_FLAGS += -std=$(CXX_DIALECT) $(INCLUDES) -pthread -Werror=all -pedantic-errors -fPIC -flto
+CXX_FLAGS += -std=$(CXX_DIALECT) $(INCLUDES) -pthread -pedantic-errors -fPIC -flto
 
-C_FLAGS += -std=$(C_DIALECT) $(INCLUDES) -pthread -Werror=all -fPIC
+C_FLAGS += -std=$(C_DIALECT) $(INCLUDES) -pthread -fPIC
 
 LINKER_FLAGS += $(LIBRARIES) -shared -pthread -fPIC
 
