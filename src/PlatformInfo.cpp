@@ -37,7 +37,8 @@ namespace lightningcreations::lcupm{
 		}
 	};
 
-	const auto& getOsNames(){
+
+	static const auto& getOsNames(){
 		static std::once_flag initOnce;
 		static dist_part osNames[]{
 #ifdef LCUPM_DIST_OS_LINUX
@@ -68,7 +69,7 @@ namespace lightningcreations::lcupm{
 	}
 #undef PRECEEDING
 #define PRECEEDING
-	const auto& getArchNames(){
+	static const auto& getArchNames(){
 		static std::once_flag initOnce;
 		static dist_part archNames[]{
 #ifdef LCUPM_ARCH_x64
@@ -94,7 +95,7 @@ namespace lightningcreations::lcupm{
 	}
 #undef PRECEEDING
 #define PRECEEDING
-	const auto& getToolkitNames(){
+	static const auto& getToolkitNames(){
 		static std::once_flag initOnce;
 		static dist_part toolkitNames[]{
 #ifdef LCUPM_DIST_TK_GTK
