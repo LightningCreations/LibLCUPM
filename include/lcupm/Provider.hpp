@@ -26,9 +26,13 @@ namespace lightningcreations::lcupm::provider{
 	class LCUPM_API ProviderKey{
 		std::variant<std::monostate,X509*,RSA*> key;
 	public:
+		friend void swap(ProviderKey&,ProviderKey&);
 		ProviderKey()=default;
 		ProviderKey(FILE*);
 		ProviderKey(FILE*,certificate_key_t);
+		ProviderKey(const ProviderKey&);
+		ProviderKey(ProviderKey&&);
+		ProviderKey& operator=(ProviderKey);
 		~ProviderKey();
 		bool verify(std::string signature,const unsigned char* data,std::size_t dlen);
 	};
@@ -37,17 +41,17 @@ namespace lightningcreations::lcupm::provider{
 		std::string keyUri;
 		std::string keyFingerprint;
 		mutable std::optional<ProviderKey> resolved;
-		//Mutable b/c the const versions may need to follow the keyref
+		bool isCertificate;
 	public:
 		KeyRef(std::string keyUri,std::string fingerprint);
+		KeyRef(std::string keyUri,std::string fingerprint,certificate_key_t);
 		const ProviderKey& operator*()const;
 		const ProviderKey* operator->()const;
 	};
 
 	class LCUPM_API Provider{
 	private:
-		std::optional<ProviderKey> key;
-		KeyRef ref;
+		ProviderKey key;
 		std::string name;
 	public:
 		Provider(std::string,KeyRef);
@@ -55,6 +59,16 @@ namespace lightningcreations::lcupm::provider{
 		Provider(Json::Value);
 		const std::string& getName()const;
 		const ProviderKey& getKey()const;
+	};
+
+	class LCUPM_API ProviderRef{
+	private:
+		std::string uri;
+		mutable std::optional<Provider> provider;
+	public:
+		ProviderRef(std::string uri);
+		const Provider& operator*()const;
+		const Provider* operator->()const;
 	};
 }
 

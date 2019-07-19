@@ -176,6 +176,17 @@ namespace lightningcreations::lcupm::provider{
 		}
 	};
 
+	struct CopyVisitor{
+	public:
+		void operator()(std::monostate s){}
+		void operator()(RSA* r){
+			RSA_up_ref(r);
+		}
+		void operator()(X509* x){
+			X509_up_ref(x);
+		}
+	};
+
 	ProviderKey::ProviderKey(FILE* f){
 		this->key = RSA_new();
 		PEM_read_RSAPublicKey(f,&std::get<RSA*>(this->key),NULL,NULL);
@@ -184,8 +195,23 @@ namespace lightningcreations::lcupm::provider{
 		this->key = X509_new();
 		PEM_read_X509(f,&std::get<X509*>(this->key),NULL,NULL);
 	}
+	ProviderKey::ProviderKey(ProviderKey&& rhs):key{std::exchange(rhs.key,std::monostate{})}{}
+	ProviderKey::ProviderKey(const ProviderKey& other):key{other.key}{
+		std::visit(CopyVisitor{},this->key);
+	}
 	ProviderKey::~ProviderKey(){
 		std::visit(DestroyVisitor{},this->key);
+	}
+
+	ProviderKey& ProviderKey::operator=(ProviderKey rhs){
+		using std::swap;
+		swap(key,rhs.key);
+		return *this;
+	}
+
+	void swap(ProviderKey& a,ProviderKey& b){
+		using std::swap;
+		swap(a.key,b.key);
 	}
 
 	bool ProviderKey::verify(std::string s,const unsigned char* data,size_t dlen){
@@ -193,25 +219,83 @@ namespace lightningcreations::lcupm::provider{
 		return std::visit(VerifyVisitor{s,data,dlen},this->key);
 	}
 
-	static ProviderKey downloadKey(const std::string& uri){
+	static ProviderKey downloadKey(const std::string& uri,bool isCertificate){
 		FILE* f = std::tmpfile();
 		lcupm::downloader::Downloader::downloadTo(f,URI{uri});
-		ProviderKey k{f};
+
+		ProviderKey k{};
+		if(isCertificate)
+			k = ProviderKey{f,certificate_key};
+		else
+			k = ProviderKey{f};
 		std::fclose(f);
 		return std::move(k);
 	}
 
-	KeyRef::KeyRef(std::string uri,std::string fingerprint):keyUri(uri),keyFingerprint(fingerprint){}
-
+	KeyRef::KeyRef(std::string uri,std::string fingerprint):keyUri(uri),keyFingerprint(fingerprint),isCertificate(){}
+	KeyRef::KeyRef(std::string keyUri,std::string fingerprint,certificate_key_t):keyUri(keyUri),keyFingerprint(fingerprint),isCertificate(true){}
 	const ProviderKey& KeyRef::operator *()const{
 		if(resolved.has_value())
 			return *resolved;
 		else{
-			resolved = downloadKey(keyUri);
+			resolved = downloadKey(keyUri,isCertificate);
 			return *resolved;
 		}
 	}
 	const ProviderKey* KeyRef::operator->()const{
+		return &**this;
+	}
+
+	Provider::Provider(std::string name,KeyRef key):name{std::move(name)},key{*key}{}
+	Provider::Provider(std::string name,ProviderKey key):name{std::move(name)},key{std::move(key)}{}
+	Provider::Provider(Json::Value value):name{value["name"].asString()}{
+		if(value["ref"].type()==Json::ValueType::nullValue){
+			FILE* f = std::tmpfile();
+			{
+				std::string key{value["key"].asString()};
+				std::fputs(key.c_str(), f);
+			}
+			if(value.get("kind","key")=="key")
+				key = ProviderKey{f};
+			else
+				key = ProviderKey{f,certificate_key};
+			std::fclose(f);
+		}else if(value.get("kind","key")=="key")
+			key = *KeyRef{value["ref"].asString(),value["fingerprint"].asString()};
+		else
+			key = *KeyRef{value["ref"].asString(),value["fingerprint"].asString(),certificate_key};
+	}
+
+	const ProviderKey& Provider::getKey()const{
+		return key;
+	}
+
+	const std::string& Provider::getName()const{
+		return name;
+	}
+
+	ProviderRef::ProviderRef(std::string uri):uri{uri}{}
+
+	const Provider& ProviderRef::operator*()const{
+		if(this->provider)
+			return *provider;
+		else{
+			FILE* f = std::tmpfile();
+			downloader::Downloader::downloadTo(f, uri);
+			std::string out;
+			char buff[1024];
+			std::size_t sz;
+			while((sz=fread(&buff,1,1024,f))!=EOF)
+				out.append(buff,buff+sz);
+			std::fclose(f);
+			Json::Reader parser{};
+			Json::Value root{};
+			parser.parse(out, root);
+			this->provider = Provider{root};
+			return *provider;
+		}
+	}
+	const Provider* ProviderRef::operator->()const{
 		return &**this;
 	}
 }
