@@ -74,7 +74,13 @@ namespace lightningcreations::lcupm::provider{
 
 	class LCUPM_API ProviderCache{
 	private:
-
+		std::filesystem::path root;
+		ProviderCache(const ProviderCache&)=delete;
+	public:
+		ProviderCache(std::filesystem::path);
+		ProviderRef getFromName(std::string name);
+		bool isValid();
+		void invalidate();
 	};
 }
 
