@@ -16,6 +16,7 @@
 #include <cstdio>
 #include <jsoncpp/json/json.h>
 #include <optional>
+#include <filesystem>
 
 namespace lightningcreations::lcupm::provider{
 	struct certificate_key_t{
@@ -69,6 +70,11 @@ namespace lightningcreations::lcupm::provider{
 		ProviderRef(std::string uri);
 		const Provider& operator*()const;
 		const Provider* operator->()const;
+	};
+
+	class LCUPM_API ProviderCache{
+	private:
+
 	};
 }
 

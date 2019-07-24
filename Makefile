@@ -1,4 +1,5 @@
-
+CXX = g++-8
+CC = gcc-8
 
 CXX_DIALECT = c++17
 C_DIALECT = c11
@@ -19,7 +20,7 @@ OUTPUT := liblcupm.so
 
 ARCHIVE_OUTPUT := liblcupm.a
 
-OBJECTS := out/PlatformInfo.o out/Provider.o out/Downloader.o
+OBJECTS := out/PlatformInfo.o out/Provider.o out/Downloader.o out/Utilities.o
 
 all: dynamic static
 
@@ -50,3 +51,7 @@ static: $(ARCHIVE_OUTPUT)
 
 rebuild: clean all
 	
+
+version:
+	$(CXX) --version
+	$(CC) --version

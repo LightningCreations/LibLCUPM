@@ -51,7 +51,7 @@
                             							
                             <tool id="cdt.managedbuild.tool.gnu.archiver.lib.debug.685148728" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.lib.debug"/>
                             							
-                            <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.lib.debug.313337751" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.lib.debug">
+                            <tool command="g++-8" id="cdt.managedbuild.tool.gnu.cpp.compiler.lib.debug.313337751" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.lib.debug">
                                 								
                                 <option id="gnu.cpp.compiler.lib.debug.option.optimization.level.1537336889" name="Optimization Level" superClass="gnu.cpp.compiler.lib.debug.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
                                 								
@@ -69,7 +69,7 @@
                                 							
                             </tool>
                             							
-                            <tool id="cdt.managedbuild.tool.gnu.c.compiler.lib.debug.987506182" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.lib.debug">
+                            <tool command="gcc-8" id="cdt.managedbuild.tool.gnu.c.compiler.lib.debug.987506182" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.lib.debug">
                                 								
                                 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.lib.debug.option.optimization.level.1772542749" name="Optimization Level" superClass="gnu.c.compiler.lib.debug.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
                                 								
