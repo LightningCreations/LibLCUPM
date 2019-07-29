@@ -10,6 +10,8 @@
 #include <openssl/pem.h>
 
 #include <functional>
+#include <mutex>
+#include <fstream>
 
 ///////////////////////////////////////////////////////////////////////////
 //Base64 Encoding Library

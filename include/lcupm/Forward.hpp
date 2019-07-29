@@ -13,6 +13,10 @@
 #include <vector>
 #include <functional>
 
+namespace lightningcreations{
+	class Version;
+}
+
 namespace lightningcreations::lcupm{
 	class URI;
 

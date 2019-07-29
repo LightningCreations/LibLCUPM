@@ -10,12 +10,31 @@
 #include <curl/curl.h>
 #include <map>
 
+using namespace std::string_literals;
+
+namespace lightningcreations::lcupm::exception{
+	class LCUPM_API NoSuchDownloader: public DownloadException{
+	public:
+		explicit NoSuchDownloader(const std::string& scheme):DownloadException("Cannot Find Downloader for URI with Scheme"+scheme){}
+	};
+	class LCUPM_API CURLException: public DownloadException{
+	public:
+		explicit CURLException(CURLcode code):DownloadException("LibCURL Returned Error: "s+curl_easy_strerror(code)){}
+	};
+
+	class LCUPM_API LocalcacheFileError: public DownloadException{
+	public:
+		explicit LocalcacheFileError(const std::string& cacheId):DownloadException("Cannot open cachefile with id: "s+cacheId){}
+	};
+}
+
 namespace lightningcreations::lcupm::downloader{
 
 	class CurlController{
 	public:
 		CurlController(){
-			curl_global_init(CURL_GLOBAL_ALL);
+			if(CURLcode code =curl_global_init(CURL_GLOBAL_ALL);code!=CURLE_OK)
+				throw exception::CURLException{code};
 		}
 		~CurlController(){
 			curl_global_cleanup();
@@ -33,12 +52,15 @@ namespace lightningcreations::lcupm::downloader{
 			static CurlController controller{};
 			curl = curl_easy_init();
 			curl_easy_setopt(curl,CURLOPT_WRITEFUNCTION,write_callback);
-			curl_easy_setopt(curl,CURLOPT_WRITEDATA,target);\
+			curl_easy_setopt(curl,CURLOPT_WRITEDATA,target);
 		}
 
 		bool doDownload(const std::string& url){
 			curl_easy_setopt(curl,CURLOPT_URL,url.c_str());
-			return curl_easy_perform(curl)==CURLcode::CURLE_OK;
+			if(CURLcode code =curl_easy_perform(curl);code!=CURLE_OK)
+				throw exception::CURLException(code);
+			else
+				return true;
 		}
 
 		~Curl(){
@@ -102,7 +124,14 @@ namespace lightningcreations::lcupm::downloader{
 	protected:
 		bool do_downloadTo(FILE* target,const URI& uri){
 			auto cacheFile{"./.localcache"+uri.getRemaining()};
-			return std::freopen(cacheFile.c_str(),"rb",target);
+			FILE* cached = std::fopen(cacheFile.c_str(),"r");
+			if(!cached)
+				throw exception::LocalcacheFileError(uri.getRemaining());
+			decltype(std::fread(nullptr,0,0,cached)) sz;
+			unsigned char block[1024];
+			while((sz=std::fread(block,1,1024,cached))!=-1)
+				std::fwrite(block,1,1024,target);
+			return true;
 		}
 	};
 
@@ -112,7 +141,10 @@ namespace lightningcreations::lcupm::downloader{
 	}
 
 	void Downloader::downloadTo(FILE* target,const URI& uri){
-		(getSchemeMap()[uri.getScheme()])->do_downloadTo(target,uri);
+		if(!getSchemeMap().count(uri.getScheme()))
+			throw exception::NoSuchDownloader(uri.getScheme());
+		if(!(getSchemeMap()[uri.getScheme()])->do_downloadTo(target,uri))
+			throw exception::DownloadException("Downloader failed for unknown reason");
 	}
 
 	void Downloader::registerDownloader(const char* scheme,std::shared_ptr<Downloader> ptr){

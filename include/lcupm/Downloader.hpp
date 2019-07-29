@@ -10,6 +10,7 @@
 
 #include <lcupm/Forward.hpp>
 #include <memory>
+#include <lcupm/Exceptions.hpp>
 
 namespace lightningcreations::lcupm{
 	class LCUPM_API URI{
@@ -23,6 +24,12 @@ namespace lightningcreations::lcupm{
 		const std::string& getRemaining()const;
 		std::string getURI()const;
 	};
+	namespace exception{
+		class LCUPM_API DownloadException:public LCUPMException{
+		public:
+			using LCUPMException::LCUPMException;
+		};
+	}
 }
 
 namespace lightningcreations::lcupm::downloader{

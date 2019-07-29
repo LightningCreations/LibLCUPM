@@ -17,6 +17,9 @@
 #include <jsoncpp/json/json.h>
 #include <optional>
 #include <filesystem>
+#include <lcupm/Utilities.hpp>
+#include <map>
+#include <lcupm/Exceptions.hpp>
 
 namespace lightningcreations::lcupm::provider{
 	struct certificate_key_t{
@@ -38,6 +41,9 @@ namespace lightningcreations::lcupm::provider{
 		bool verify(std::string signature,const unsigned char* data,std::size_t dlen);
 	};
 
+	/**
+	 * Describes a Followable reference to ProviderKey.
+	 */
 	class LCUPM_API KeyRef{
 		std::string keyUri;
 		std::string keyFingerprint;
@@ -46,6 +52,11 @@ namespace lightningcreations::lcupm::provider{
 	public:
 		KeyRef(std::string keyUri,std::string fingerprint);
 		KeyRef(std::string keyUri,std::string fingerprint,certificate_key_t);
+		/**
+		 * Follows the key reference.
+		 * If the key has already been resolved, then returns a reference to the key.
+		 * Otherwise, downloads the
+		 */
 		const ProviderKey& operator*()const;
 		const ProviderKey* operator->()const;
 	};
@@ -55,6 +66,7 @@ namespace lightningcreations::lcupm::provider{
 		ProviderKey key;
 		std::string name;
 	public:
+		Provider()=default;
 		Provider(std::string,KeyRef);
 		Provider(std::string,ProviderKey);
 		Provider(Json::Value);
@@ -70,17 +82,26 @@ namespace lightningcreations::lcupm::provider{
 		ProviderRef(std::string uri);
 		const Provider& operator*()const;
 		const Provider* operator->()const;
+		void invalidate();
 	};
 
 	class LCUPM_API ProviderCache{
 	private:
 		std::filesystem::path root;
+		mutable utilities::FileLock lock;
+		mutable std::map<std::string,Provider> cachedRefs;
+		std::vector<std::function<void(ProviderCache&)>> invalidateHooks;
+		bool unsafe_isValid()const;
+		Provider unsafe_getFromName(std::string name);
+		void unsafe_invalidate();
 		ProviderCache(const ProviderCache&)=delete;
+		ProviderCache& operator=(const ProviderCache&)=delete;
 	public:
 		ProviderCache(std::filesystem::path);
-		ProviderRef getFromName(std::string name);
-		bool isValid();
+		Provider getFromName(std::string name)const;
+		bool isValid()const;
 		void invalidate();
+		void onInvalidate(std::function<void(ProviderCache&)> invalidHook);
 	};
 }
 

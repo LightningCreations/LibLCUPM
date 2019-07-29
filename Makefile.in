@@ -1,0 +1,35 @@
+
+INCLUDES := -I./include
+
+OSDISTS := @distoslist@
+ARCHDISTS := @distarchlist@
+TKDISTS := @disttklist@
+
+CDIALECT := c11
+CXXDIALECT := c++17
+
+BUILD_STATIC = @static@
+BUILD_DYNAMIC = @dyanmic@
+
+TARGETS =
+
+ifeq $(BUILD_STATIC),yes
+TARGETS += static
+endif
+
+ifeq $(BUILD_DYNAMIC),yes
+TARGETS += dynamic
+endif
+
+
+INSTALL_TARGETS = $(foreach target,$(TARGETS),install-$(target))
+
+DEFINES := @defines@
+
+LIBRARIES = @libraries@
+
+ALL_CPP_FLAGS := $(foreach define,$(DEFINES),-D$(define)) $(CPP_FLAGS)
+
+ALL_LD_FLAGS := $(foreach library,$(LIBRARIES),-l$(library)) $(LD_FLAGS) -shared
+
+
