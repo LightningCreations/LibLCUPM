@@ -77,7 +77,7 @@ namespace lightningcreations::lcupm::downloader{
 		static std::shared_ptr<target> impl;
 	};
 
-
+#ifdef BUILD_DOWNLOADER_HTTP
 	class HTTPDownloader final:public DownloaderImpl<HTTPDownloader>{
 	private:
 		friend class DownloaderImpl<HTTPDownloader>;
@@ -92,7 +92,9 @@ namespace lightningcreations::lcupm::downloader{
 	};
 	std::shared_ptr<HTTPDownloader> HTTPDownloader::http{new HTTPDownloader("http")};
 
+#endif
 
+#ifdef BUILD_DOWNLOADER_FTP
 	class FTPDownloader final:public DownloaderImpl<FTPDownloader>{
 	private:
 		friend class DownloaderImpl<FTPDownloader>;
@@ -103,7 +105,9 @@ namespace lightningcreations::lcupm::downloader{
 			return curl.doDownload(uri.getURI());
 		}
 	};
+#endif
 
+#ifdef BUILD_DOWNLOADER_SMB
 	class SMBDownloader final:public DownloaderImpl<SMBDownloader>{
 	private:
 		friend class DownloaderImpl<SMBDownloader>;
@@ -114,7 +118,7 @@ namespace lightningcreations::lcupm::downloader{
 			return curl.doDownload(uri.getURI());
 		}
 	};
-
+#endif
 	template<typename target> std::shared_ptr<target> DownloaderImpl<target>::impl{new target{}};
 
 	class LocalCacheDownloader final:public DownloaderImpl<LocalCacheDownloader>{

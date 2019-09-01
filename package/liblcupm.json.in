@@ -1,0 +1,11 @@
+{
+	"info":{
+		"name":"@packagename@",
+		"copyright":"(C) 2019 Connor Horman and Lightning Creations",
+		"license":"lgplv3",
+		"group":"library"
+	},
+	"provider":{
+		"name":"@packageprovider@"
+	}
+}
