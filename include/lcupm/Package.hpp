@@ -30,6 +30,7 @@ namespace lightningcreations::lcupm::package{
 		std::string group;
 	public:
 		PackageInfo(const Json::Value&);
+		PackageInfo(std::string name,std::vector<std::string> description,Version ver,std::string licenseCode,std::string group);
 		const std::string& getName()const;
 		const std::vector<std::string>& getDescription()const;
 		Version getVersion()const;

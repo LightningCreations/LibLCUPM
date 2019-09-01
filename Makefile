@@ -1,5 +1,3 @@
-CXX = g++-8
-CC = gcc-8
 
 CXX_DIALECT = c++17
 C_DIALECT = c11
