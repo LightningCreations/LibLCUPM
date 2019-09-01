@@ -43,3 +43,6 @@
 # Things made with configure
 /Makefile
 /packages/liblcupm.json
+/config.log
+/config.status
+/autom4te.cache/
