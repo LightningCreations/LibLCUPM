@@ -11,8 +11,12 @@
 #include <lcupm/Forward.hpp>
 #include <lcupm/Provider.hpp>
 #include <lcupm/Version.hpp>
+#include <lcupm/PlatformInfo.hpp>
+
+
 
 #include <jsoncpp/json/json.h>
+#include <unordered_map>
 #include <string>
 #include <vector>
 
@@ -21,7 +25,7 @@
 namespace lightningcreations::lcupm::package{
 
 
-	class PackageInfo{
+	class LCUPM_API PackageInfo{
 	private:
 		std::string name;
 		std::vector<std::string> description;
@@ -36,6 +40,13 @@ namespace lightningcreations::lcupm::package{
 		Version getVersion()const;
 		const std::string& getLicense()const;
 		const std::string& getGroup()const;
+	};
+
+	class LCUPM_API Package{
+	private:
+		PackageInfo info;
+		provider::Provider provider;
+
 	};
 }
 

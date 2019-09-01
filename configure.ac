@@ -62,7 +62,31 @@ AC_ARG_WITH([package-provider],[--with-package-provider=<name> The name of the p
 ],[
 	packageprovider=lcroot
 ])
+
+
+AC_ARG_ENABLE([arch-i386],[--enable-arch-i386 -> Builds support for 32-bit distributions on linux. This is default for windows builds and 32-bit linux],[
+	forcei386=$withval
+],[
+	forcei386=no
+])
+
+AC_ARG_ENABLE([arch-amd64],[--enable-arch-amd64 -> Builds support for 64-bit distributions. This is default for all 64-bit builds],[
+	forceamd64=$withval
+],[
+	forceamd64=no
+])
+
+AC_ARG_ENABLE([arch-arm],[--enable-arch-arm -> Builds support for arm. This is default when the package is being built on arm],[
+	forcearm=$withval
+],[
+	forcearm=no
+])
+
+
 AC_SUBST([packageprovider])
+AC_SUBST([forcei386])
+AC_SUBST([forceamd64])
+AC_SUBST([forcearm])
 
 LIBLCUPM_TOOLKIT_SWITCH(sfml)
 LIBLCUPM_TOOLKIT_SWITCH(sdl)

@@ -19,6 +19,18 @@ ifeq (@downloader_smb@,yes) # SMB Downloader
 DEFINES += BUILD_DOWNLOADER_SMB
 endif
 
+ifeq (@forcei386@,yes)
+DEFINES += LCUPM_ARCH_x86
+endif
+
+ifeq (@forceamd64@,yes)
+DEFINES += LCUPM_ARCH_x64
+endif
+
+ifeq (@forcearm@,yes)
+DEFINES += LCUPM_ARCH_arm
+endif
+
 LIBRARIES = ssl crypto curl jsoncpp
 
 

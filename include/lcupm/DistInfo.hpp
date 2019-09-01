@@ -35,7 +35,6 @@
 #endif
 #ifdef __amd64__
 #define LCUPM_ARCH_x64 1
-#define LCUPM_ARCH_x86 0
 #endif
 #ifdef __arm__
 #define LCUPM_ARCH_arm 0

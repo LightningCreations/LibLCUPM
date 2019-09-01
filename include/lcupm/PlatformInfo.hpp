@@ -30,6 +30,21 @@ namespace lightningcreations::lcupm{
 	};
 }
 
+namespace std{
+	template<> struct hash<lightningcreations::lcupm::PlatformInfo>{
+	public:
+		using result_type = std::size_t;
+		result_type operator()(const lightningcreations::lcupm::PlatformInfo& dist){
+			auto hash_content = [](const char* c){
+				result_type hash{};
+				for(;*c!=0;c++)
+					hash=31*hash+*c;
+			};
+			return 31*31*hash_content(dist.getOSName())+31*hash_content(dist.getArchName())+hash_content(dist.getToolkitName());
+		}
+	};
+}
+
 
 
 #endif /* INCLUDE_PLATFORMINFO_HPP_ */
