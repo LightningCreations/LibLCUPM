@@ -98,6 +98,8 @@ clean:
 	
 distclean: clean
 	rm -rf config.cache
+	rm -rf config.log
+	rm -rf config.status
 	rm -f Makefile
 
 out/:
