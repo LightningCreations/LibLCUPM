@@ -32,8 +32,14 @@
 *.app
 *.db
 *.sqlite
+
+# Visual Studio Stuff
 /.vs
 /LibLCUPM-Static/.vs/LibLCUPM-Static/v16
 /LibLCUPM-Static/Debug
 /LibLCUPM-Static/x64/Debug
 /Debug/
+
+# Things made with configure
+/Makefile
+/packages/liblcupm.json
