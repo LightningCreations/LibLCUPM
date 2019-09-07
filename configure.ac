@@ -83,6 +83,7 @@ AC_ARG_ENABLE([arch-arm],[--enable-arch-arm -> Builds support for arm. This is d
 ])
 
 
+
 AC_SUBST([packageprovider])
 AC_SUBST([forcei386])
 AC_SUBST([forceamd64])
@@ -94,5 +95,25 @@ LIBLCUPM_TOOLKIT_SWITCH(gtk)
 LIBLCUPM_TOOLKIT_SWITCH(x11)
 
 AC_CONFIG_FILES([Makefile package/liblcupm.json])
+
+
+AC_MSG_CHECKING([checking the os dist for the target os])
+AC_CANONICAL_TARGET
+
+target=${target_os}
+AC_SUBST([target])
+AC_MSG_RESULT(${target_os})
+
+
+AC_MSG_CHECKING([Making sure the C++ compiler allows you to include <filesystem>])
+CXXFLAGS_TMP=${CXX_FLAGS}
+CXX_FLAGS=[-std=c++17 ${CXX_FLAGS}]
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADER([filesystem],[],[
+	AC_MSG_ERROR([This compiler does not support the inclusion of <filesystem>])
+])
+CXX_FLAGS=${CXXFLAGS_TMP}
+AC_LANG_POP
+
 
 AC_OUTPUT

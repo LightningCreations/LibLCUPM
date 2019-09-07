@@ -3,6 +3,8 @@ INCLUDES := -I./include
 
 DEFINES = LCUPM_BUILD
 
+TARGET = @target@
+
 ifeq (@downloader_http@,yes) # HTTP Downloader
 DEFINES += BUILD_DOWNLOADER_HTTP
 endif
@@ -51,6 +53,16 @@ ifeq ($(BUILD_DYNAMIC),yes)
 TARGETS += dynamic
 endif
 
+ARCHIVE_OUTPUT = liblcupm.a
+
+ifneq ($(findstring cygwin,$(TARGET)),)
+OUTPUT = lcupm.dll
+endif
+
+ifneq ($(findstring linux,$(TARGET)),)
+OUTPUT = liblcupm.so
+endif
+
 INCLUDES := include
 
 LIBDIR = @libdir@
@@ -76,13 +88,6 @@ LIBRARY_INFO_OBJECT := out/LibraryInfo.o
 
 WIN_LIBRARY_INFO := win-out/LibraryInfo.o
 
-OUTPUT := liblcupm.so
-
-WIN_OUTPUT := liblcupm.dll
-
-WIN_ARCHIVE_OUTPUT := win-liblcupm.a
-
-ARCHIVE_OUTPUT := liblcupm.a
 
 all: $(TARGETS)
 
